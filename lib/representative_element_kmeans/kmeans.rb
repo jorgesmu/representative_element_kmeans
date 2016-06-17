@@ -29,6 +29,10 @@ module RepresentativeElementKmeans
   	end
 
   	def representative_elements
+  		representative_ids.map{|k| elements_map[k]}
+  	end
+
+  	def representative_ids
   		representative_elements = []
   		clusters_by_ids.each_with_index do |cluster, i|
   			centroid = centroids[i]
@@ -43,7 +47,7 @@ module RepresentativeElementKmeans
   			end
   			representative_elements.push min_element
   		end
-  		representative_elements.map{|k| elements_map[k]}
+  		representative_elements
   	end
 
   	def keys

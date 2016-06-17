@@ -38,4 +38,9 @@ describe RepresentativeElementKmeans::Kmeans do
     expect(kmeans.representative_elements).to eq [elements["1"],elements["5"], elements["4"]]
   end
 
+  it 'representative_ids' do
+    kmeans.stub(:clusters_by_index).and_return([[0,2],[1,4],[3]])
+    kmeans.stub(:centroids).and_return([[1,2,4], [4,5,3], elements["4"] ])
+    expect(kmeans.representative_ids).to eq ["1", "5", "4"]
+  end
 end
