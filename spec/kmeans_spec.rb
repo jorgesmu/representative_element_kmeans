@@ -1,7 +1,15 @@
 require 'spec_helper'
 
 describe RepresentativeElementKmeans::Kmeans do
-  let(:elements) { {"1" => [1,1,1], "2" => [1,2,3], "3" =>[3,2,10], "4" => [0,5,2]} }
+  let(:elements) { 
+                    {"1" => [1,1,1],
+                     "2" => [1,2,3], 
+                     "3" =>[3,2,10], 
+                     "4" => [0,5,2],
+                     "5" => [1,4,5]
+                    }
+                 }
+
   let(:kmeans) { RepresentativeElementKmeans::Kmeans.new elements }
 
   it 'not nil' do
@@ -9,7 +17,7 @@ describe RepresentativeElementKmeans::Kmeans do
   end
 
   it 'keys' do
-    expect(kmeans.keys).to eq ["1", "2", "3", "4"]
+    expect(kmeans.keys).to eq ["1", "2", "3", "4", "5"]
   end
 
   it 'cluster_by_ids' do
@@ -23,4 +31,11 @@ describe RepresentativeElementKmeans::Kmeans do
   	kmeans.stub(:clusters_by_index).and_return([[0,2],[1],[3]])
   	expect(kmeans.clusters_by_elements).to eq [[elements["1"],elements["3"]],[elements["2"]], [elements["4"]]]
   end
+
+  it 'representative_elements' do
+    kmeans.stub(:clusters_by_index).and_return([[0,2],[1,4],[3]])
+    kmeans.stub(:centroids).and_return([[1,2,4], [4,5,3], elements["4"] ])
+    expect(kmeans.representative_elements).to eq [elements["1"],elements["5"], elements["4"]]
+  end
+
 end

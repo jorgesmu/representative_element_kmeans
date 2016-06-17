@@ -29,7 +29,34 @@ module RepresentativeElementKmeans
   		clusters_by_domain @elements
   	end
 
+  	def representative_elements
+  		representative_elements = []
+  		clusters_by_elements.each_with_index do |cluster, i|
+  			centroid = centroids[i]
+  			distance = Float::INFINITY 
+  			min_element = nil
+  			cluster.each do |element|
+  				distance_element_to_centroid = euclidean(centroid, element).to_f
+  				if distance_element_to_centroid < distance
+  					distance = distance_element_to_centroid
+  					min_element = element
+  				end
+  			end
+  			representative_elements.push min_element
+  		end
+  		representative_elements
+  	end
+
   	private
+
+		def euclidean(e1, e2)
+			sum = 0
+			e1.zip(e2).each do |c1, c2|
+			  component = (c1 - c2)**2
+			  sum += component
+			end
+			Math.sqrt(sum)	
+		end
 
   	def clusters_by_domain domain_elements
 	  	clusters_by_index.map do |cluster|
