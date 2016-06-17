@@ -33,21 +33,7 @@ module RepresentativeElementKmeans
   	end
 
   	def representative_ids
-  		representative_elements = []
-  		clusters_by_ids.each_with_index do |cluster, i|
-  			centroid = centroids[i]
-  			distance = Float::INFINITY 
-  			min_element = nil
-  			cluster.each do |element_key|
-  				distance_element_to_centroid = euclidean(centroid, elements_map[element_key]).to_f
-  				if distance_element_to_centroid < distance
-  					distance = distance_element_to_centroid
-  					min_element = element_key
-  				end
-  			end
-  			representative_elements.push min_element
-  		end
-  		representative_elements
+			find_representative_elements.map{|e| e[:element_key]}
   	end
 
   	def keys
@@ -59,6 +45,24 @@ module RepresentativeElementKmeans
   	end
 
   	private
+
+  	def find_representative_elements
+  	  representative_elements = []
+  		clusters_by_ids.each_with_index do |cluster, i|
+  			centroid = centroids[i]
+  			distance = Float::INFINITY 
+  			min_id = nil
+  			cluster.each do |element_key|
+  				distance_element_to_centroid = euclidean(centroid, elements_map[element_key]).to_f
+  				if distance_element_to_centroid < distance
+  					distance = distance_element_to_centroid
+  					min_id = element_key
+  				end
+  			end
+  			representative_elements.push({element_key: min_id, distance: distance})
+  		end
+  		representative_elements
+  	end
 
 		def euclidean(e1, e2)
 			sum = 0
