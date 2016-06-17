@@ -2,12 +2,11 @@ require 'k_means'
 
 module RepresentativeElementKmeans
   class Kmeans
-  	attr_reader :keys, :elements
+  	attr_reader :elements_map, :opts
 
 
   	def initialize(elements_map, opts={})
-  		@keys = elements_map.keys
-  		@elements = elements_map.values
+  		@elements_map = elements_map
   		@opts = opts
   		clusterize 
   	end
@@ -17,7 +16,7 @@ module RepresentativeElementKmeans
   	end
 
   	def clusters
-  		clusters_by_domain @keys
+  		clusters_by_domain keys
   	end
   	alias_method :clusters_by_ids, :clusters
 
@@ -26,25 +25,33 @@ module RepresentativeElementKmeans
   	end
 
   	def clusters_by_elements
-  		clusters_by_domain @elements
+  		clusters_by_domain elements
   	end
 
   	def representative_elements
   		representative_elements = []
-  		clusters_by_elements.each_with_index do |cluster, i|
+  		clusters_by_ids.each_with_index do |cluster, i|
   			centroid = centroids[i]
   			distance = Float::INFINITY 
   			min_element = nil
-  			cluster.each do |element|
-  				distance_element_to_centroid = euclidean(centroid, element).to_f
+  			cluster.each do |element_key|
+  				distance_element_to_centroid = euclidean(centroid, elements_map[element_key]).to_f
   				if distance_element_to_centroid < distance
   					distance = distance_element_to_centroid
-  					min_element = element
+  					min_element = element_key
   				end
   			end
   			representative_elements.push min_element
   		end
-  		representative_elements
+  		representative_elements.map{|k| elements_map[k]}
+  	end
+
+  	def keys
+  		elements_map.keys
+  	end
+
+  	def elements 
+  		elements_map.values
   	end
 
   	private
@@ -71,7 +78,7 @@ module RepresentativeElementKmeans
   	end
 
   	def cluster_manager
-  		@kmeans_manager ||= KMeans.new(@elements, @opts)
+  		@kmeans_manager ||= KMeans.new(elements, @opts)
   	end
   end
 end
