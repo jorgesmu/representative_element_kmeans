@@ -10,14 +10,16 @@ describe RepresentativeElementKmeans::Kmeans do
                     }
                  }
 
-  let(:kmeans) { RepresentativeElementKmeans::Kmeans.new elements, {} do |e1,e2|
+  let(:kmeans) { 
+    RepresentativeElementKmeans::Kmeans.new elements, {} do |e1,e2|
       sum = 0
       e1.zip(e2).each do |c1, c2|
         component = (c1 - c2)**2
         sum += component
       end
       Math.sqrt(sum) 
-      end }
+      end 
+  }
 
   it 'not nil' do
     expect(kmeans).not_to eq nil 
