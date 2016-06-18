@@ -36,6 +36,14 @@ module RepresentativeElementKmeans
 			find_representative_elements.map{|e| e[:element_key]}
   	end
 
+  	def distance_to_representatives query
+  		distances_to representative_elements, query
+  	end
+
+  	def distance_to_centroids query
+  		distances_to centroids, query
+  	end
+
   	def keys
   		elements_map.keys
   	end
@@ -45,6 +53,12 @@ module RepresentativeElementKmeans
   	end
 
   	private
+
+  	def distances_to vector, query
+  		vector.map do |v|
+  			euclidean v, query
+  		end
+  	end
 
   	def find_representative_elements
   	  representative_elements = []
