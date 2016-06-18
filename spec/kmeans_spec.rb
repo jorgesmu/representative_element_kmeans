@@ -18,7 +18,7 @@ describe RepresentativeElementKmeans::Kmeans do
         sum += component
       end
       Math.sqrt(sum) 
-      end 
+    end 
   }
 
   it 'not nil' do
