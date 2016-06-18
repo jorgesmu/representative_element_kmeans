@@ -63,11 +63,10 @@ module RepresentativeElementKmeans
   	def find_representative_elements
   	  representative_elements = []
   		clusters_by_ids.each_with_index do |cluster, i|
-  			centroid = centroids[i]
   			distance = Float::INFINITY 
   			min_id = nil
   			cluster.each do |element_key|
-  				distance_element_to_centroid = euclidean(centroid, elements_map[element_key]).to_f
+  				distance_element_to_centroid = euclidean(centroids[i], elements_map[element_key]).to_f
   				if distance_element_to_centroid < distance
   					distance = distance_element_to_centroid
   					min_id = element_key
