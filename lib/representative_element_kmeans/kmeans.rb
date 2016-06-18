@@ -1,13 +1,13 @@
 require 'k_means'
-
 module RepresentativeElementKmeans
   class Kmeans
-  	attr_reader :elements_map, :opts
+  	attr_reader :elements_map, :opts, :distance_measure
 
 
-  	def initialize(elements_map, opts={})
+  	def initialize(elements_map, opts, &distance_measure)
   		@elements_map = elements_map
   		@opts = opts
+      @distance = distance_measure
   		clusterize 
   	end
 
@@ -56,7 +56,7 @@ module RepresentativeElementKmeans
 
   	def distances_to vector, query
   		vector.map do |v|
-  			euclidean v, query
+  			calculate_distance v, query
   		end
   	end
 
@@ -66,7 +66,7 @@ module RepresentativeElementKmeans
   			distance = Float::INFINITY 
   			min_id = nil
   			cluster.each do |element_key|
-  				distance_element_to_centroid = euclidean(centroids[i], elements_map[element_key]).to_f
+  				distance_element_to_centroid = calculate_distance(centroids[i], elements_map[element_key]).to_f
   				if distance_element_to_centroid < distance
   					distance = distance_element_to_centroid
   					min_id = element_key
@@ -77,13 +77,8 @@ module RepresentativeElementKmeans
   		representative_elements
   	end
 
-		def euclidean(e1, e2)
-			sum = 0
-			e1.zip(e2).each do |c1, c2|
-			  component = (c1 - c2)**2
-			  sum += component
-			end
-			Math.sqrt(sum)	
+		def calculate_distance(e1, e2)
+      @distance.call e1, e2	
 		end
 
   	def clusters_by_domain domain_elements
@@ -99,7 +94,7 @@ module RepresentativeElementKmeans
   	end
 
   	def cluster_manager
-  		@kmeans_manager ||= KMeans.new(elements, @opts)
+  		@kmeans_manager ||= KMeans.new(elements, @opts, &@distance)
   	end
   end
 end
