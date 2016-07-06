@@ -7,6 +7,11 @@ module RepresentativeElementKmeans
   	def initialize(elements_map, opts, &distance_measure)
   		@elements_map = elements_map
   		@opts = opts
+      if @opts[:custom_centroids]
+        @opts[:custom_centroids] = @opts[:custom_centroids].map do |centroid|
+          CustomCentroid.new centroid
+        end
+      end
       @distance = distance_measure
   		clusterize 
   	end
