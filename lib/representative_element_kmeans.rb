@@ -1,5 +1,5 @@
 require "representative_element_kmeans/version"
 require "representative_element_kmeans/kmeans"
-
+require "representative_element_kmeans/custom_centroid"
 module RepresentativeElementKmeans
 end
